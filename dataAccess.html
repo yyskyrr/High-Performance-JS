@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>dataAccess</title>
+</head>
+<body>
+<p>计算机科学中数据存储的位置关系到代码执行过程中数据的检索速度</p>
+<p>javaScript中有下面4种基本的数据存取位置：直接量、局部变量、数组项、对象成员</p>
+<p>如果在乎运行速度，尽量使用直接量和局部变量，减少数组项和对象成员的使用</p>
+<p>在没有优化 JavaScript 引擎的浏览器中，最好尽可能使用局部变量。一个好的经验法则<br>
+    是：用局部变量存储本地范围之外的变量值，如果它们在函数中的使用多于一次。</p>
+<p>在脚本中最好是小心地使用闭包，内存和运行速度都值得被关注。但是，你可以通过上一条 <br>
+    关于域外变量的处理建议，减轻对运行速度的影响：将常用的域外变量存入局部变量中，然后直接访问局 <br>
+    部变量。</p>
+<p>JavaScript 中的对象是基于原形的。原形是其他对象的基础，定义并实现了一个新对象所必须具有的成
+    员。这一概念完全不同于传统面向对象编程中“类”的概念，它定义了创建新对象的过程。原形对象为所有
+    给定类型的对象实例所共享，因此所有实例共享原形对象的成员。</p>
+<p>可以使用 hasOwnProperty()函数确定一个对象是否具有特定名称的实例成员;
+    要确定对象是否具有某个名称的属性，你可以使用操作符 in。</p>
+<script>
+    var book = {
+        title: "High Performance JavaScript",
+        publisher: "Yahoo! Press"
+    };
+    alert(book.hasOwnProperty("title")); //true
+    alert(book.hasOwnProperty("toString")); //false
+    alert("title" in book); //true
+    alert("toString" in book); //true
+</script>
+
+<p>可以用“构造器”创建另外一种类型的原形:</p>
+<script>
+    function Book(title, publisher) {
+        this.title = title;
+        this.publisher = publisher;
+    }
+
+    Book.prototype.sayTitle = function () {
+        alert(this.title);
+    };
+    var book1 = new Book("High Performance JavaScript", "Yahoo! Press");
+    var book2 = new Book("JavaScript: The Good Parts", "Yahoo! Press");
+    alert(book1 instanceof Book); //true
+    alert(book1 instanceof Object); //true
+    book1.sayTitle(); //"High Performance JavaScript"
+    alert(book1.toString()); //"[object Object]"
+</script>
+
+<p>成员嵌套越深，访问速度越慢。location.href 总是快于 window.location.href，而后者也要<br>
+    比 window.location.href.toString()更快。如果这些属性不是对象的实例属性，那么成员解析还要在每个点上<br>
+    搜索原形链，这将需要更长时间</p>
+
+
+<p>小结</p>
+<p>1.在 JavaScript 中，数据存储位置可以对代码整体性能产生重要影响。有四种数据访问类型：直接量，变 <br>
+    量，数组项，对象成员。它们有不同的性能考虑。</p>
+<p>2.直接量和局部变量访问速度非常快，数组项和对象成员需要更长时间</p>
+<p>3.局部变量比域外变量快，因为它位于作用域链的第一个对象中。变量在作用域链中的位置越深，访问所需<br>
+    的时间就越长。全局变量总是最慢的，因为它们总是位于作用域链的最后一环。</p>
+<p>4.避免使用 with 表达式，因为它改变了运行期上下文的作用域链。而且应当小心对待 try-catch 表达式的 catch<br>
+    子句，因为它具有同样效果。</p>
+<p>5.嵌套对象成员会造成重大性能影响，尽量少用。</p>
+<p>6.一个属性或方法在原形链中的位置越深，访问它的速度就越慢。</p>
+<p>将经常使用的对象成员，数组项，和域外变<br>
+    量存入局部变量中。然后，访问局部变量的速度会快于那些原始变量。</p>
+</body>
+</html>
