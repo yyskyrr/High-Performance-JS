@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>响应接口</title>
+</head>
+<body>
+JavaScript 和 UI 更新共享的进程通常被称作浏览器 UI 线程
+
+当按钮被点击时，它触发 UI 线程创建两个任务并添加到队列中。第一个任务是按钮的 UI 更新，
+它需要改变外观以指示出它被按下了，第二个任务是 JavaScript 运行任务
+浏览器在 JavaScript 运行时间上采取了两种限制个：调用栈尺寸限制（第四章讨论过）和长时间脚
+本限制。
+一个单一的 JavaScript 操作应当使用的总时间（最大）是 100 毫秒。这个数字根据 Robert
+Miller 在 1968 年的研究。
+定时器与 UI 线程交互的方式有助于分解长运行脚本成为较短的片断。
+<script>
+    var button = document.getElementById("my-button");
+    button.onclick = function () {
+        oneMethod();
+        setTimeout(function () {
+            document.getElementById("notice").style.color = "red";
+        }, 50);
+        anotherMethod();
+    };
+</script>
+如果 anotherMethod()执行时间超过 50 毫秒，那么定时器代码将在 onclick 处理完成之前加入到队列中。
+其结果是等 onclick 处理运行完毕，定时器代码立即执行。
+JavaScript 定时器延时往往不准确，快慢大约几毫秒。
+在 Windows 系统上定时器分辨率为 15 毫秒，也就是说一个值为 15 的定时器延时将根据最后一次系统
+时间刷新而转换为 0 或者 15。所以最小值建议为 25 毫秒以确保至少 15 毫秒延迟。
+可通过原生的 Date 对象跟踪代码的运行时间。
+<script>
+    var start = +new Date(),
+        stop;
+    someLongProcess();
+    stop = +new Date();
+    if (stop - start < 50) {
+        alert("Just about right.");
+    } else {
+        alert("Taking too long.");
+    }
+</script>
+定时器使你的 JavaScript 代码整体性能表现出巨大差异，但过度使用它们会对性能产生负面影响。
+网页工人线程对网页应用来说是一个潜在的巨大性能提升，因为新的工人线程在自己的线程中运行JavaScript。
+工人线程的运行环境由下列部分组成：
+1.一个浏览器对象，只包含四个属性：appName, appVersion, userAgent, 和 platform
+2.一个 location 对象（和 window 里的一样，只是所有属性都是只读的）
+3.一个 self 对象指向全局工人线程对象
+4.一个 importScripts()方法，使工人线程可以加载外部 JavaScript 文件
+5.所有 ECMAScript 对象，诸如 Object，Array，Data等
+6.XMLHttpRequest 构造器
+7.setTimeout()和 setInterval()方法
+8.close()方法可立即停止工人线程
+创建网页工人线程：var worker = new Worker("code.js");
+
+工人线程和网页代码通过事件接口进行交互
+<script>
+    var worker = new Worker("code.js");
+    worker.onmessage = function (event) {
+        alert(event.data);
+    };
+    worker.postMessage("Nicholas");
+
+    //inside code.js
+    importScripts("file1.js", "file2.js");
+    self.onmessage = function (event) {
+        self.postMessage("Hello, " + event.data + "!");
+    };
+</script>
+只有某些类型的数据可以使用 postMessage()传递。可以传递原始值（string，number，boolean，null
+和 undefined），也可以传递 Object 和 Array 的实例
+可能的实际用途如下：
+1.编/解码一个大字符串
+2.复杂数学运算（包括图像或视频处理）
+3.给一个大数组排序
+</body>
+</html>
