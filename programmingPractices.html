@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编程实践</title>
+</head>
+<body>
+大多数情况下，没必要使用 eval()或 Function()，如果可能的话，尽量避免使用它们。至于另外两个函
+数，setTimeout()和 setInterval()，建议第一个参数传入一个函数而不是一个字符串。
+在 JavaScript 中有多种方法创建对象和数组，但没有什么比创建对象和数组直接量更快了。
+
+位操作运算符程与 JavaScript 中其他数学和布尔运算相比还是非常快。
+<script>
+    //bitwise AND
+    var result1 = 25 & 3; //1
+    alert(result.toString(2)); //"1"
+    //bitwise OR
+    var result2 = 25 | 3; //27
+    alert(resul2.toString(2)); //"11011"
+    //bitwise XOR
+    var result3 = 25 ^ 3; //26
+    alert(resul3.toString(2)); //"11000"
+    //bitwise NOT
+    var result = ~25; //-26
+    alert(resul2.toString(2)); //"-11010"
+</script>
+无论你怎样优化 JavaScript 代码，它永远不会比 JavaScript 引擎提供的原生方法更快。
+Math 对象包含专门设计的属性和方法，使数学运算更容易。
+原生的 querySelector()和 querySelectorAll()方法完成它们的任务时，平均只需要基于 JavaScript 的CSS 查询 10%的时间。
+
+小结
+1.通过避免使用 eval_r()和 Function()构造器避免二次评估。此外，给 setTimeout()和 setInterval()传递函数参
+数而不是字符串参数。
+2.创建新对象和数组时使用对象直接量和数组直接量。它们比非直接量形式创建和初始化更快。
+3.避免重复进行相同工作。当需要检测浏览器时，使用延迟加载或条件预加载。
+4.当执行数学远算时，考虑使用位操作，它直接在数字底层进行操作。
+5.原生方法总是比 JavaScript 写的东西要快。尽量使用原生方法。
+</body>
+</html>
